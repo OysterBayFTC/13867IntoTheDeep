@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Autonomous;
+package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.teamcode.Base.AutoRobotStruct;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "AutoLinearThree", group = "Autonomous")
-public class AutoLinearThree extends LinearOpMode {
+@Autonomous(name = "AutoLinearTwo", group = "Autonomous")
+public class AutoLinearTwo extends LinearOpMode {
 
     private AutoRobotStruct robot = new AutoRobotStruct();
     private GoBildaPinpointDriver pinpointDriver;
