@@ -95,16 +95,18 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        pinpointDriver.setOffsets(-84.0, -168.0);
-        pinpointDriver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        pinpointDriver.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-        pinpointDriver.resetPosAndIMU();
+
 
         leftFront = hardwareMap.get(DcMotorEx.class, "motorFrontRight");
         leftRear = hardwareMap.get(DcMotorEx.class, "motorBackLeft");
         rightRear = hardwareMap.get(DcMotorEx.class, "motorBackRight");
         rightFront = hardwareMap.get(DcMotorEx.class, "motorFrontRight");
         pinpointDriver = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
+
+        pinpointDriver.setOffsets(-84.0, -168.0);
+        pinpointDriver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        pinpointDriver.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        pinpointDriver.resetPosAndIMU();
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
