@@ -1,3 +1,5 @@
+package org.firstinspires.ftc.teamcode.Autonomous;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
