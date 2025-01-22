@@ -295,11 +295,13 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public double getRawExternalHeading() {
+        pinpointDriver.update();
         return pinpointDriver.getHeading();
     }
 
     @Override
     public Double getExternalHeadingVelocity() {
+        pinpointDriver.update();
         return pinpointDriver.getHeadingVelocity(); // This already returns radians/sec
     }
 
