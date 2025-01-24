@@ -13,13 +13,22 @@ public class DriverControl extends RobotStructure {
     public void init() {
         super.init(); // Ensure RobotStructure's initialization happens
         boolean touchdropState = touchdrop.isPressed();
-        
+        final double liftLimitHeightUp = 5400;
+        final double liftLimitHeightDown = 900;
+
+
         telemetry.addData("Touchdrop Sensor State", touchdropState ? "Pressed" : "Released");
         telemetry.addData("Touchgrab Sensor State", touchdropState ? "Pressed" : "Released");
         
         telemetry.update();
         ArmOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         ArmTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Initialize encoders for arm motors
+        liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     @Override
