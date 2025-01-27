@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Base.RobotStructure;
 
@@ -13,13 +14,10 @@ public class DriverControl extends RobotStructure {
     public void init() {
         super.init(); // Ensure RobotStructure's initialization happens
         boolean touchdropState = touchdrop.isPressed();
-        final double liftLimitHeightUp = 5400;
-        final double liftLimitHeightDown = 900;
-
 
         telemetry.addData("Touchdrop Sensor State", touchdropState ? "Pressed" : "Released");
         telemetry.addData("Touchgrab Sensor State", touchdropState ? "Pressed" : "Released");
-        
+
         telemetry.update();
         ArmOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         ArmTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -29,7 +27,10 @@ public class DriverControl extends RobotStructure {
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
+        // Set it to neutral (stop)
+        clawServo.setPosition(0.5);
+
+            }
 
     @Override
     public void loop() {
@@ -86,10 +87,12 @@ else{
 }
 
         // Lift motors control
-        if (gamepad2.dpad_up) {
+        int liftLimitHeightUp = 5400;
+        int liftLimitHeightDown = 900;
+        if (gamepad2.dpad_up && (Math.abs(liftLeft.getCurrentPosition()) < liftLimitHeightUp)) {
             liftLeft.setPower(0.75);
             liftRight.setPower(0.75);
-        } else if (gamepad2.dpad_down) {
+        } else if (gamepad2.dpad_down && (Math.abs(liftLeft.getCurrentPosition()) > liftLimitHeightDown)) {
             liftLeft.setPower(-0.75);
             liftRight.setPower(-0.75);
         } else if (gamepad2.dpad_right) {
@@ -106,10 +109,13 @@ else{
 
     private void controlServos() {
         if (gamepad2.a) {
-            clawServo.setPosition(0.45); // Set servo for grab
+            clawServo.setPosition(1.00); // Setting postion to 1, which is equal to 1800 degrees of roation
         }
         if (gamepad2.b) {
-            clawServo.setPosition(0.65); // Set servo for releasing
+            clawServo.setPosition(0.00); //  setting the postion to 0, which is equal to 0 degrees.
+        }
+        if (gamepad2.x) {
+            clawServo.setPosition(0.5); // Setting postion to 0.5, which is equal to 900 degrees of roation
         }
         // Bucket servo control
         if (gamepad1.left_bumper) {

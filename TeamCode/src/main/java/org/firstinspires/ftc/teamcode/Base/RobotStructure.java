@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Base;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -55,6 +56,8 @@ public class RobotStructure extends OpMode {
         touchdrop = hardwareMap.get(TouchSensor.class, "touchdrop");
         touchgrab = hardwareMap.get(TouchSensor.class, "touchgrab");
     //    touchbucket = hardwareMap.get(TouchSensor.class, "touchbucket");
+
+
 
 
         // Servo initialization

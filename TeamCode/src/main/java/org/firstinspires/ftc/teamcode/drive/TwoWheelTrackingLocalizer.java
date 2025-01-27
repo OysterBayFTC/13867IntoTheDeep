@@ -40,10 +40,10 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
     public static double PARALLEL_X = 4; // X is the up and down direction
-    public static double PARALLEL_Y = 0; // Y is the strafe direction
+    public static double PARALLEL_Y = 6; // Y is the strafe direction
 
-    public static double PERPENDICULAR_X = -7;
-    public static double PERPENDICULAR_Y = -5;
+    public static double PERPENDICULAR_X = -4;
+    public static double PERPENDICULAR_Y = 0.5;
     public static double X_MULTIPLIER = 1.0186292224; // Multiplier in the X direction
     public static double Y_MULTIPLIER = 1.02009673734; // Multiplier in the Y direction
     // Parallel/Perpendicular to the forward axis
@@ -63,7 +63,7 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
 
         pinpointDriver = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
 
-        pinpointDriver.setOffsets(-84.0, -168.0);
+        pinpointDriver.setOffsets(150, 8);
         pinpointDriver.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         pinpointDriver.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         pinpointDriver.resetPosAndIMU();
@@ -90,8 +90,8 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
     public List<Double> getWheelPositions() {
         pinpointDriver.update();
         return Arrays.asList(
-                (pinpointDriver.getPosX() * -X_MULTIPLIER) / 25.4,
-                (pinpointDriver.getPosY() * -Y_MULTIPLIER / 25.4)
+                (pinpointDriver.getPosX() * X_MULTIPLIER) / 25.4,
+                (pinpointDriver.getPosY() * Y_MULTIPLIER) / 25.4
         );
     }
 
@@ -104,8 +104,8 @@ public class TwoWheelTrackingLocalizer extends TwoTrackingWheelLocalizer {
         //  compensation method
 
         return Arrays.asList(
-                pinpointDriver.getVelX() * X_MULTIPLIER,
-                pinpointDriver.getVelY() * Y_MULTIPLIER
+                (pinpointDriver.getVelX() * X_MULTIPLIER) /25.4,
+                (pinpointDriver.getVelY() * Y_MULTIPLIER) / 25.4
         );
     }
 }
