@@ -9,6 +9,9 @@ import org.firstinspires.ftc.teamcode.Base.RobotStructure;
 @TeleOp(name = "DriverControl")
 public class DriverControl extends RobotStructure {
     private boolean motorState = false;
+    double clawServoPosition = 0.15; // Initial position
+    boolean xButtonPressed = false; // To track if X button is pressed
+    boolean aButtonPressed = false; // To track if a button is pressed
 
     @Override
     public void init() {
@@ -108,14 +111,35 @@ else{
     }
 
     private void controlServos() {
+
+
         if (gamepad2.a) {
-            clawServo.setPosition(1.00); // Setting postion to 1, which is equal to 1800 degrees of roation
+            if (!aButtonPressed) { // Only execute once per button press
+                aButtonPressed = true; // Mark button as pressed
+                clawServoPosition += 0.33; // Decrease position by 0.05
+                if (clawServoPosition > 0.99) {
+                    clawServoPosition = 0.99; // Ensure position doesn't go below 0
+                }
+                clawServo.setPosition(clawServoPosition); // Update servo position
+            }
+        } else {
+            aButtonPressed = false; // Reset button state when not pressed
         }
         if (gamepad2.b) {
             clawServo.setPosition(0.00); //  setting the postion to 0, which is equal to 0 degrees.
         }
+        // Check if X button is pressed
         if (gamepad2.x) {
-            clawServo.setPosition(0.5); // Setting postion to 0.5, which is equal to 900 degrees of roation
+            if (!xButtonPressed) { // Only execute once per button press
+                xButtonPressed = true; // Mark button as pressed
+                clawServoPosition -= 0.05; // Decrease position by 0.05
+                if (clawServoPosition < 0.0) {
+                    clawServoPosition = 0.0; // Ensure position doesn't go below 0
+                }
+                clawServo.setPosition(clawServoPosition); // Update servo position
+            }
+        } else {
+            xButtonPressed = false; // Reset button state when not pressed
         }
         // Bucket servo control
         if (gamepad1.left_bumper) {
