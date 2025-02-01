@@ -25,6 +25,7 @@ public class RobotStructure extends OpMode {
     public Servo bucketServo;
     // Servo bucketServo ControlHub Slot2
     public Servo clawServo;
+    public Servo clawRotate;
     // Servo clawServo ExpansionHub Slot2 
     
 // Game pad 1 A - low bucket
@@ -55,6 +56,8 @@ public class RobotStructure extends OpMode {
         clawServo = hardwareMap.get(Servo.class, "clawServo");
         touchdrop = hardwareMap.get(TouchSensor.class, "touchdrop");
         touchgrab = hardwareMap.get(TouchSensor.class, "touchgrab");
+        clawRotate = hardwareMap.get(Servo.class, "clawRotate");
+
     //    touchbucket = hardwareMap.get(TouchSensor.class, "touchbucket");
 
 

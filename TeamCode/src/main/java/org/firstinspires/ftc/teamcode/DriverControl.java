@@ -8,11 +8,20 @@ import org.firstinspires.ftc.teamcode.Base.RobotStructure;
 
 @TeleOp(name = "DriverControl")
 public class DriverControl extends RobotStructure {
-    private boolean motorState = false;
+    private final boolean motorState = false;
     double clawServoPosition = 0.15; // Initial position
+    double clawRotateBlockLeft = 0;
+    double clawRotateBlockRight = .65;
+    double clawRotateBlockVert = .35;
+    double clawRotateBlockDrop = .99;
+    private final double clawStepUp = 0.20;
+    private final double clawStepDown = .20;
+    private double clawPosition = 0.0;
     boolean xButtonPressed = false; // To track if X button is pressed
     boolean aButtonPressed = false; // To track if a button is pressed
-
+private boolean prevA = false;
+private boolean prevB = false;
+private boolean prevX = false;
     @Override
     public void init() {
         super.init(); // Ensure RobotStructure's initialization happens
@@ -31,7 +40,7 @@ public class DriverControl extends RobotStructure {
         liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Set it to neutral (stop)
-        clawServo.setPosition(0.5);
+        clawServo.setPosition(0.0);
 
             }
 
@@ -41,7 +50,10 @@ public class DriverControl extends RobotStructure {
         initDriver();
         controlMotors();
         controlServos();
-        updateTelemetry();
+       // updateTelemetry();
+        telemetry.addData("Target Claw Servo ", clawPosition);
+        telemetry.addData("Actual Claw Servo ", clawServo.getPosition());
+        telemetry.update();
     }
 
     private void initDriver() {
@@ -69,19 +81,23 @@ public class DriverControl extends RobotStructure {
 
     private void controlMotors() {
         // Arm control logic
-          if (gamepad2.right_bumper && !touchgrab.isPressed()) {
-    ArmOne.setPower(-0.3); // Move towards Grab
-    ArmTwo.setPower(-0.3);
-} else if (gamepad2.left_bumper && !touchdrop.isPressed()) {
-    ArmOne.setPower(0.3); // Move towards Bucket
-    ArmTwo.setPower(0.3);
+
+        double triggerPowerRight = gamepad2.right_trigger * .45;
+        double triggerPowerLeft = gamepad2.left_trigger * .45;
+
+          if (triggerPowerRight > 0 && !touchgrab.isPressed()) {
+    ArmOne.setPower(-triggerPowerRight); // Move towards Grab
+    ArmTwo.setPower(-triggerPowerRight);
+} else if (triggerPowerLeft > 0 && !touchdrop.isPressed()) {
+    ArmOne.setPower(triggerPowerLeft); // Move towards Bucket
+    ArmTwo.setPower(triggerPowerLeft);
 } 
- else if (gamepad2.right_bumper && gamepad2.y) {
-    ArmOne.setPower(-0.3); // Move towards Grab
-    ArmTwo.setPower(-0.3);
-} else if (gamepad2.left_bumper && gamepad2.y) {
-    ArmOne.setPower(0.3); // Move towards Bucket
-    ArmTwo.setPower(0.3);
+ else if (triggerPowerRight > 0 && gamepad2.y) {
+    ArmOne.setPower(-triggerPowerRight); // Move towards Grab
+    ArmTwo.setPower(-triggerPowerRight);
+} else if (triggerPowerLeft > 0 && gamepad2.y) {
+    ArmOne.setPower(triggerPowerLeft); // Move towards Bucket
+    ArmTwo.setPower(triggerPowerLeft);
 }
 else{
     // If neither bumper is pressed, stop the arm motors
@@ -92,15 +108,15 @@ else{
         // Lift motors control
         int liftLimitHeightUp = 5400;
         int liftLimitHeightDown = 900;
-        if (gamepad2.dpad_up && (Math.abs(liftLeft.getCurrentPosition()) < liftLimitHeightUp)) {
-            liftLeft.setPower(0.75);
-            liftRight.setPower(0.75);
-        } else if (gamepad2.dpad_down && (Math.abs(liftLeft.getCurrentPosition()) > liftLimitHeightDown)) {
+        if (gamepad2.dpad_up /*&& (Math.abs(liftLeft.getCurrentPosition()) < liftLimitHeightUp)*/) {
             liftLeft.setPower(-0.75);
             liftRight.setPower(-0.75);
+        } else if (gamepad2.dpad_down /*&& (Math.abs(liftLeft.getCurrentPosition()) > liftLimitHeightDown)*/) {
+            liftLeft.setPower(0.75);
+            liftRight.setPower(0.75);
         } else if (gamepad2.dpad_right) {
-            liftLeft.setPower(0.1);
-            liftRight.setPower(0.1);
+            liftLeft.setPower(-0.01);
+            liftRight.setPower(-0.01);
         } else if (gamepad2.dpad_left) {
             liftLeft.setPower(-1);
             liftRight.setPower(-1);
@@ -112,35 +128,48 @@ else{
 
     private void controlServos() {
 
+        boolean currA = gamepad2.a;
+        boolean currB = gamepad2.b;
+        boolean currX = gamepad2.x;
 
-        if (gamepad2.a) {
-            if (!aButtonPressed) { // Only execute once per button press
-                aButtonPressed = true; // Mark button as pressed
-                clawServoPosition += 0.33; // Decrease position by 0.05
-                if (clawServoPosition > 0.99) {
-                    clawServoPosition = 0.99; // Ensure position doesn't go below 0
-                }
-                clawServo.setPosition(clawServoPosition); // Update servo position
+
+        if (currA && !prevA) {
+            clawPosition = 0.0;
+            clawServo.setPosition(clawPosition);
+        }
+
+        if (currB && !prevB) {
+            if ((clawPosition + clawStepUp) <= 1.0) {
+                clawPosition += clawStepUp;
+                clawServo.setPosition(clawPosition);
             }
-        } else {
-            aButtonPressed = false; // Reset button state when not pressed
         }
-        if (gamepad2.b) {
-            clawServo.setPosition(0.00); //  setting the postion to 0, which is equal to 0 degrees.
-        }
-        // Check if X button is pressed
-        if (gamepad2.x) {
-            if (!xButtonPressed) { // Only execute once per button press
-                xButtonPressed = true; // Mark button as pressed
-                clawServoPosition -= 0.05; // Decrease position by 0.05
-                if (clawServoPosition < 0.0) {
-                    clawServoPosition = 0.0; // Ensure position doesn't go below 0
-                }
-                clawServo.setPosition(clawServoPosition); // Update servo position
+
+        if (currX && !prevX) {
+            if ((clawPosition - clawStepUp) >= 0.0) {
+                clawPosition -= clawStepDown;
+                clawServo.setPosition(clawPosition);
             }
-        } else {
-            xButtonPressed = false; // Reset button state when not pressed
         }
+        prevA = currA;
+        prevB = currB;
+        prevX = currX;
+
+        //  Code for Claw Rotate
+        if (gamepad1.x) {
+            clawRotate.setPosition(clawRotateBlockLeft); // When block is left of claw
+        }
+        else   if (gamepad1.a) {
+            clawRotate.setPosition(clawRotateBlockVert); // When block is vertical
+        }
+        else   if (gamepad1.b) {
+            clawRotate.setPosition(clawRotateBlockRight); // Whem block is right of claw
+        }
+        else   if (gamepad1.y) {
+            clawRotate.setPosition(clawRotateBlockDrop); // Whem block is right of claw
+        }
+
+
         // Bucket servo control
         if (gamepad1.left_bumper) {
             bucketServo.setPosition(0.005); // Set to score position

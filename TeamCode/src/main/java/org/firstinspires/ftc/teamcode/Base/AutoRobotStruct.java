@@ -23,8 +23,11 @@ public class AutoRobotStruct {
     public Servo bucketServo;
     // Servo bucketServo ControlHub Slot2
     public Servo clawServo;
-    // Servo clawServo ExpansionHub Slot2 
-    
+    // Servo clawServo ExpansionHub Slot2
+
+    public Servo clawRotate;
+    // Servo clawServo ExpansionHub Slot2
+
 
     // Initialize hardware
    public void initHardware(HardwareMap hardwareMap) {
@@ -40,7 +43,8 @@ public class AutoRobotStruct {
     clawServo = hardwareMap.get(Servo.class, "clawServo"); //
     touchdrop = hardwareMap.get(TouchSensor.class, "touchdrop"); //
     touchgrab = hardwareMap.get(TouchSensor.class, "touchgrab"); //
-  //  touchbucket = hardwareMap.get(TouchSensor.class, "touchbucket"); //
+       clawRotate = hardwareMap.get(Servo.class, "clawRotate");
+       //  touchbucket = hardwareMap.get(TouchSensor.class, "touchbucket"); //
 
     // Motor directions (if required)
     motorBackLeft.setDirection(DcMotor.Direction.REVERSE);
