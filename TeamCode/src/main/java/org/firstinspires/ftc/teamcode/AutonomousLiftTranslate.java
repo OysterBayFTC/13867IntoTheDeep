@@ -83,7 +83,11 @@ public class AutonomousLiftTranslate extends LinearOpMode {
     
 
         waitForStart();
-        
+
+        // Before the autonomous code ends, save the lift's encoder value
+        SharedState.liftEncoderValue = robot.liftLeft.getCurrentPosition(); // Or use liftRight if needed
+        SharedState.liftEncoderValue = robot.liftRight.getCurrentPosition(); // Or use liftRight if needed
+
         // Start the first set of movements (combined from both versions)
         Thread liftThread1 = new Thread(new LiftTask1());
         Thread movementThread1 = new Thread(new MovementTask1());

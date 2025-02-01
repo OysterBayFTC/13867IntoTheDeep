@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.SharedState;
+
 
 import org.firstinspires.ftc.teamcode.Base.RobotStructure;
 
@@ -39,6 +41,14 @@ private boolean prevX = false;
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        // Set the lift's encoder value to the shared state value
+        liftLeft.setTargetPosition(SharedState.liftEncoderValue);
+        liftRight.setTargetPosition(SharedState.liftEncoderValue);
+        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         // Set it to neutral (stop)
         clawServo.setPosition(0.0);
 
@@ -107,13 +117,31 @@ else{
 
         // Lift motors control
         int liftLimitHeightUp = 5400;
-        int liftLimitHeightDown = 900;
-        if (gamepad2.dpad_up /*&& (Math.abs(liftLeft.getCurrentPosition()) < liftLimitHeightUp)*/) {
+        int liftLimitHeightDown = 200;
+        /*
+        if (gamepad2.dpad_up && (Math.abs(liftLeft.getCurrentPosition()) < liftLimitHeightUp)) {
             liftLeft.setPower(-0.75);
             liftRight.setPower(-0.75);
-        } else if (gamepad2.dpad_down /*&& (Math.abs(liftLeft.getCurrentPosition()) > liftLimitHeightDown)*/) {
-            liftLeft.setPower(0.75);
-            liftRight.setPower(0.75);
+            */
+
+        if (gamepad2.dpad_up) {
+            // Move lift up if below target height
+            if (Math.abs(liftLeft.getCurrentPosition()) < liftLimitHeightUp) {
+                liftLeft.setPower(-0.75);
+                liftRight.setPower(-0.75);
+            } else {
+                liftLeft.setPower(0); // Stop if target height is reached
+                liftRight.setPower(0);
+            }
+        } else if (gamepad2.dpad_down) {
+            // Move lift down if above target height
+            if (Math.abs(liftLeft.getCurrentPosition()) > liftLimitHeightDown) {
+                liftLeft.setPower(0.75);
+                liftRight.setPower(0.75);
+            } else {
+                liftLeft.setPower(0); // Stop if target height is reached
+                liftRight.setPower(0);
+            }
         } else if (gamepad2.dpad_right) {
             liftLeft.setPower(-0.01);
             liftRight.setPower(-0.01);
@@ -175,7 +203,7 @@ else{
             bucketServo.setPosition(0.005); // Set to score position
         }
        else if (gamepad1.right_bumper) {
-            bucketServo.setPosition(0.3); // Set to drop  position
+            bucketServo.setPosition(0.45); // Set to drop  position
         }
   //      else if (gamepad1.a) {
     //        bucketServo.setPosition(0.45); // used to move the bucket out of the way

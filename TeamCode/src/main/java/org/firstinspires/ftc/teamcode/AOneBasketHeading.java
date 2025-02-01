@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.Base.AutoRobotStruct;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-@Autonomous(name = "OneBasketHeading", group = "Autonomous")
-public class OneBasketHeading extends LinearOpMode {
+@Autonomous(name = "AOneBasketHeading", group = "Autonomous")
+public class AOneBasketHeading extends LinearOpMode {
 
     private AutoRobotStruct robot = new AutoRobotStruct(); // Hardware structure
     private GoBildaPinpointDriver pinpointDriver;
@@ -64,6 +64,8 @@ public class OneBasketHeading extends LinearOpMode {
 
         waitForStart();
 
+        SharedState.liftEncoderValue = robot.liftLeft.getCurrentPosition(); // Or use liftRight if needed
+        SharedState.liftEncoderValue = robot.liftRight.getCurrentPosition(); // Or use liftRight if needed
         // Start the first set of movements
         Thread liftThread1 = new Thread(new LiftTask1());
         Thread movementThread1 = new Thread(new MovementTask1());
@@ -84,8 +86,8 @@ public class OneBasketHeading extends LinearOpMode {
     private class LiftTask1 implements Runnable {
         @Override
         public void run() {
-            robot.ArmOne.setPower(-0.85);  // Optimized power from version 2
-            robot.ArmTwo.setPower(-0.85);
+            robot.ArmOne.setPower(-0.65);  // Optimized power from version 2
+            robot.ArmTwo.setPower(-0.65);
             sleep(400);  // Optimized sleep from version 2
             robot.ArmOne.setPower(-0.2);
             robot.ArmTwo.setPower(0.2);
