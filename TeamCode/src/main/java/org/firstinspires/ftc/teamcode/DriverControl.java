@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import org.firstinspires.ftc.teamcode.SharedState;
-
 
 import org.firstinspires.ftc.teamcode.Base.RobotStructure;
 
@@ -21,9 +19,9 @@ public class DriverControl extends RobotStructure {
     private double clawPosition = 0.0;
     boolean xButtonPressed = false; // To track if X button is pressed
     boolean aButtonPressed = false; // To track if a button is pressed
-private boolean prevA = false;
-private boolean prevB = false;
-private boolean prevX = false;
+    private boolean prevA = false;
+    private boolean prevB = false;
+    private boolean prevX = false;
     @Override
     public void init() {
         super.init(); // Ensure RobotStructure's initialization happens
@@ -41,18 +39,10 @@ private boolean prevX = false;
         liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        // Set the lift's encoder value to the shared state value
-        liftLeft.setTargetPosition(SharedState.liftEncoderValue);
-        liftRight.setTargetPosition(SharedState.liftEncoderValue);
-        liftLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        liftRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
         // Set it to neutral (stop)
         clawServo.setPosition(0.0);
 
-            }
+    }
 
     @Override
     public void loop() {
@@ -60,7 +50,7 @@ private boolean prevX = false;
         initDriver();
         controlMotors();
         controlServos();
-       // updateTelemetry();
+        // updateTelemetry();
         telemetry.addData("Target Claw Servo ", clawPosition);
         telemetry.addData("Actual Claw Servo ", clawServo.getPosition());
         telemetry.update();
@@ -95,59 +85,41 @@ private boolean prevX = false;
         double triggerPowerRight = gamepad2.right_trigger * .45;
         double triggerPowerLeft = gamepad2.left_trigger * .45;
 
-          if (triggerPowerRight > 0 && !touchgrab.isPressed()) {
-    ArmOne.setPower(-triggerPowerRight); // Move towards Grab
-    ArmTwo.setPower(-triggerPowerRight);
-} else if (triggerPowerLeft > 0 && !touchdrop.isPressed()) {
-    ArmOne.setPower(triggerPowerLeft); // Move towards Bucket
-    ArmTwo.setPower(triggerPowerLeft);
-} 
- else if (triggerPowerRight > 0 && gamepad2.y) {
-    ArmOne.setPower(-triggerPowerRight); // Move towards Grab
-    ArmTwo.setPower(-triggerPowerRight);
-} else if (triggerPowerLeft > 0 && gamepad2.y) {
-    ArmOne.setPower(triggerPowerLeft); // Move towards Bucket
-    ArmTwo.setPower(triggerPowerLeft);
-}
-else{
-    // If neither bumper is pressed, stop the arm motors
-    ArmOne.setPower(0.1);
-    ArmTwo.setPower(-0.1);
-}
+        if (triggerPowerRight > 0 && !touchgrab.isPressed()) {
+            ArmOne.setPower(-triggerPowerRight); // Move towards Grab
+            ArmTwo.setPower(-triggerPowerRight);
+        } else if (triggerPowerLeft > 0 && !touchdrop.isPressed()) {
+            ArmOne.setPower(triggerPowerLeft); // Move towards Bucket
+            ArmTwo.setPower(triggerPowerLeft);
+        }
+        else if (triggerPowerRight > 0 && gamepad2.y) {
+            ArmOne.setPower(-triggerPowerRight); // Move towards Grab
+            ArmTwo.setPower(-triggerPowerRight);
+        } else if (triggerPowerLeft > 0 && gamepad2.y) {
+            ArmOne.setPower(triggerPowerLeft); // Move towards Bucket
+            ArmTwo.setPower(triggerPowerLeft);
+        }
+        else{
+            // If neither bumper is pressed, stop the arm motors
+            ArmOne.setPower(0.1);
+            ArmTwo.setPower(-0.1);
+        }
 
         // Lift motors control
         int liftLimitHeightUp = 5400;
-        int liftLimitHeightDown = 200;
-        /*
-        if (gamepad2.dpad_up && (Math.abs(liftLeft.getCurrentPosition()) < liftLimitHeightUp)) {
+        int liftLimitHeightDown = 900;
+        if (gamepad2.dpad_up /*&& (Math.abs(liftLeft.getCurrentPosition()) < liftLimitHeightUp)*/) {
             liftLeft.setPower(-0.75);
             liftRight.setPower(-0.75);
-            */
-
-        if (gamepad2.dpad_up) {
-            // Move lift up if below target height
-            if (Math.abs(liftLeft.getCurrentPosition()) < liftLimitHeightUp) {
-                liftLeft.setPower(-0.75);
-                liftRight.setPower(-0.75);
-            } else {
-                liftLeft.setPower(0); // Stop if target height is reached
-                liftRight.setPower(0);
-            }
-        } else if (gamepad2.dpad_down) {
-            // Move lift down if above target height
-            if (Math.abs(liftLeft.getCurrentPosition()) > liftLimitHeightDown) {
-                liftLeft.setPower(0.75);
-                liftRight.setPower(0.75);
-            } else {
-                liftLeft.setPower(0); // Stop if target height is reached
-                liftRight.setPower(0);
-            }
+        } else if (gamepad2.dpad_down /*&& (Math.abs(liftLeft.getCurrentPosition()) > liftLimitHeightDown)*/) {
+            liftLeft.setPower(0.75);
+            liftRight.setPower(0.75);
         } else if (gamepad2.dpad_right) {
             liftLeft.setPower(-0.01);
             liftRight.setPower(-0.01);
         } else if (gamepad2.dpad_left) {
-            liftLeft.setPower(-1);
-            liftRight.setPower(-1);
+            liftLeft.setPower(-0.9);
+            liftRight.setPower(-0.9);
         } else {
             liftLeft.setPower(0.);
             liftRight.setPower(0.);
@@ -202,12 +174,12 @@ else{
         if (gamepad1.left_bumper) {
             bucketServo.setPosition(0.005); // Set to score position
         }
-       else if (gamepad1.right_bumper) {
-            bucketServo.setPosition(0.45); // Set to drop  position
+        else if (gamepad1.right_bumper) {
+            bucketServo.setPosition(0.3); // Set to drop  position
         }
-  //      else if (gamepad1.a) {
-    //        bucketServo.setPosition(0.45); // used to move the bucket out of the way
-      //  } 
+        //      else if (gamepad1.a) {
+        //        bucketServo.setPosition(0.45); // used to move the bucket out of the way
+        //  }
     }
 
     private void updateTelemetry() {
