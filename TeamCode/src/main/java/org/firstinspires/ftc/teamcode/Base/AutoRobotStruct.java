@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Base;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,7 +23,7 @@ public class AutoRobotStruct {
     // TouchSensor touchdrop Analog ControlHub 2-3
     public Servo bucketServo;
     // Servo bucketServo ControlHub Slot2
-    public Servo clawServo;
+    public CRServo clawServo;
     // Servo clawServo ExpansionHub Slot2
 
     public Servo clawRotate;
@@ -40,7 +41,7 @@ public class AutoRobotStruct {
     ArmOne = hardwareMap.get(DcMotor.class, "ArmOne"); // 
     ArmTwo = hardwareMap.get(DcMotor.class, "ArmTwo"); //
     bucketServo = hardwareMap.get(Servo.class, "bucketServo"); //
-    clawServo = hardwareMap.get(Servo.class, "clawServo"); //
+    clawServo = hardwareMap.get(CRServo.class, "clawServo"); //
     touchdrop = hardwareMap.get(TouchSensor.class, "touchdrop"); //
     touchgrab = hardwareMap.get(TouchSensor.class, "touchgrab"); //
        clawRotate = hardwareMap.get(Servo.class, "clawRotate");

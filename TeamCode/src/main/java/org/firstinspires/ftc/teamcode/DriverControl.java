@@ -40,7 +40,7 @@ public class DriverControl extends RobotStructure {
         liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Set it to neutral (stop)
-        clawServo.setPosition(0.0);
+        clawServo.setPower(0.0);
 
     }
 
@@ -51,9 +51,7 @@ public class DriverControl extends RobotStructure {
         controlMotors();
         controlServos();
         // updateTelemetry();
-        telemetry.addData("Target Claw Servo ", clawPosition);
-        telemetry.addData("Actual Claw Servo ", clawServo.getPosition());
-        telemetry.update();
+
     }
 
     private void initDriver() {
@@ -128,32 +126,18 @@ public class DriverControl extends RobotStructure {
 
     private void controlServos() {
 
-        boolean currA = gamepad2.a;
-        boolean currB = gamepad2.b;
-        boolean currX = gamepad2.x;
+        if (gamepad2.a) {
+            clawServo.setPower(-1.0);
 
-
-        if (currA && !prevA) {
-            clawPosition = 0.0;
-            clawServo.setPosition(clawPosition);
         }
 
-        if (currB && !prevB) {
-            if ((clawPosition + clawStepUp) <= 1.0) {
-                clawPosition += clawStepUp;
-                clawServo.setPosition(clawPosition);
-            }
+        if (gamepad2.b) {
+            clawServo.setPower(1.0);
         }
 
-        if (currX && !prevX) {
-            if ((clawPosition - clawStepUp) >= 0.0) {
-                clawPosition -= clawStepDown;
-                clawServo.setPosition(clawPosition);
-            }
+        if (gamepad2.x){
+            clawServo.setPower(0.0);
         }
-        prevA = currA;
-        prevB = currB;
-        prevX = currX;
 
         //  Code for Claw Rotate
         if (gamepad1.x) {

@@ -109,12 +109,7 @@ public class DriverControlXandY extends RobotStructure {
     }
 
     private void controlServos() {
-        if (gamepad2.a) {
-            clawServo.setPosition(0.40); // Set servoTwo to 0.40 when button A is pressed
-        }
-        if (gamepad2.b) {
-            clawServo.setPosition(0.10); // Set servoTwo to 0.10 when button B is pressed
-        }
+
         // Code for bucket servo
         if (gamepad2.left_bumper) {
             bucketServo.setPosition(0.30); // Set bucketServo to 0.40 when button left bumper is pressed

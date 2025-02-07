@@ -145,7 +145,7 @@ public class AOneBasketHeading extends LinearOpMode {
         telemetry.update();
 
         // Close the claw
-        robot.clawServo.setPosition(CLAW_CLOSE);
+        robot.clawServo.setPower(CLAW_CLOSE);
         telemetry.addData("Claw Status", "Closed");
         telemetry.update();
         sleep(500);

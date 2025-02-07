@@ -84,12 +84,7 @@ public class DriverControlWithOdometry extends RobotStructure {
     }
 
     private void controlServos() {
-        if (gamepad2.a) {
-            clawServo.setPosition(0.39);
-        }
-        if (gamepad2.b) {
-            clawServo.setPosition(0.9);
-        }
+//
 
         if (gamepad1.left_bumper) {
             bucketServo.setPosition(0.07);
