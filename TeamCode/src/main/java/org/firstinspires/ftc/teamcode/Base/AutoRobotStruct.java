@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Base;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -28,6 +29,8 @@ public class AutoRobotStruct {
 
     public Servo clawRotate;
     // Servo clawServo ExpansionHub Slot2
+    public DigitalChannel sampleSwitch;
+
 
 
     // Initialize hardware
@@ -45,6 +48,8 @@ public class AutoRobotStruct {
     touchdrop = hardwareMap.get(TouchSensor.class, "touchdrop"); //
     touchgrab = hardwareMap.get(TouchSensor.class, "touchgrab"); //
        clawRotate = hardwareMap.get(Servo.class, "clawRotate");
+       sampleSwitch = hardwareMap.get(DigitalChannel.class, "sampleSwitch");
+       sampleSwitch.setMode(DigitalChannel.Mode.INPUT);
        //  touchbucket = hardwareMap.get(TouchSensor.class, "touchbucket"); //
 
     // Motor directions (if required)

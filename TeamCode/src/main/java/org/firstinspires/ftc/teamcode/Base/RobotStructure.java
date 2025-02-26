@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
@@ -20,7 +21,8 @@ public class RobotStructure extends OpMode {
     // DcMotor ArmTwo ExpansionHub  Slot3 
     // DcMotor LiftLeft ExpansionHub  Slot2
     // DcMotor LiftRight ExpansionHub Slot1 
-    public TouchSensor touchdrop, touchgrab, touchbucket;
+    public TouchSensor touchdrop, touchgrab;
+    public DigitalChannel sampleSwitch;
     // TouchSensor touchdrop Digital ControlHub 2-3
     // TouchSensor touchdrop Analog ControlHub 2-3
     public Servo bucketServo;
@@ -57,6 +59,9 @@ public class RobotStructure extends OpMode {
         clawServo = hardwareMap.get(CRServo.class, "clawServo");
         touchdrop = hardwareMap.get(TouchSensor.class, "touchdrop");
         touchgrab = hardwareMap.get(TouchSensor.class, "touchgrab");
+        sampleSwitch = hardwareMap.get(DigitalChannel.class, "sampleSwitch");
+        sampleSwitch.setMode(DigitalChannel.Mode.INPUT);
+
         clawRotate = hardwareMap.get(Servo.class, "clawRotate");
 
     //    touchbucket = hardwareMap.get(TouchSensor.class, "touchbucket");

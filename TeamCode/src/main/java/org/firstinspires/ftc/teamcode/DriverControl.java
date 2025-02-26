@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Base.RobotStructure;
 
+
 @TeleOp(name = "DriverControl")
 public class DriverControl extends RobotStructure {
     private final boolean motorState = false;
@@ -22,6 +23,8 @@ public class DriverControl extends RobotStructure {
     private boolean prevA = false;
     private boolean prevB = false;
     private boolean prevX = false;
+    private boolean clawOverRide = false;
+
     @Override
     public void init() {
         super.init(); // Ensure RobotStructure's initialization happens
@@ -50,7 +53,9 @@ public class DriverControl extends RobotStructure {
         initDriver();
         controlMotors();
         controlServos();
-        // updateTelemetry();
+
+
+        updateTelemetry();
 
     }
 
@@ -89,15 +94,13 @@ public class DriverControl extends RobotStructure {
         } else if (triggerPowerLeft > 0 && !touchdrop.isPressed()) {
             ArmOne.setPower(triggerPowerLeft); // Move towards Bucket
             ArmTwo.setPower(triggerPowerLeft);
-        }
-        else if (triggerPowerRight > 0 && gamepad2.y) {
+        } else if (triggerPowerRight > 0 && gamepad2.y) {
             ArmOne.setPower(-triggerPowerRight); // Move towards Grab
             ArmTwo.setPower(-triggerPowerRight);
         } else if (triggerPowerLeft > 0 && gamepad2.y) {
             ArmOne.setPower(triggerPowerLeft); // Move towards Bucket
             ArmTwo.setPower(triggerPowerLeft);
-        }
-        else{
+        } else {
             // If neither bumper is pressed, stop the arm motors
             ArmOne.setPower(0.1);
             ArmTwo.setPower(-0.1);
@@ -127,29 +130,35 @@ public class DriverControl extends RobotStructure {
     private void controlServos() {
 
         if (gamepad2.a) {
+
             clawServo.setPower(-1.0);
-
         }
-
-        if (gamepad2.b) {
+        else if (gamepad2.b && !sampleSwitch.getState() && !clawOverRide) {
             clawServo.setPower(1.0);
+            clawOverRide = false;
         }
-
-        if (gamepad2.x){
+        else if (gamepad2.x) {
+            clawOverRide = false;
             clawServo.setPower(0.0);
         }
+        else if (gamepad2.y && gamepad2.b) {
+            clawOverRide = true;
+            clawServo.setPower(1.0);
+        }
+        else if (!gamepad2.a && !gamepad2.y && sampleSwitch.getState()) {
+            clawServo.setPower(0.0);
+            clawOverRide = false;
+        }
+
 
         //  Code for Claw Rotate
         if (gamepad1.x) {
             clawRotate.setPosition(clawRotateBlockLeft); // When block is left of claw
-        }
-        else   if (gamepad1.a) {
+        } else if (gamepad1.a) {
             clawRotate.setPosition(clawRotateBlockVert); // When block is vertical
-        }
-        else   if (gamepad1.b) {
+        } else if (gamepad1.b) {
             clawRotate.setPosition(clawRotateBlockRight); // Whem block is right of claw
-        }
-        else   if (gamepad1.y) {
+        } else if (gamepad1.y) {
             clawRotate.setPosition(clawRotateBlockDrop); // Whem block is right of claw
         }
 
@@ -157,8 +166,7 @@ public class DriverControl extends RobotStructure {
         // Bucket servo control
         if (gamepad1.left_bumper) {
             bucketServo.setPosition(0.005); // Set to score position
-        }
-        else if (gamepad1.right_bumper) {
+        } else if (gamepad1.right_bumper) {
             bucketServo.setPosition(0.3); // Set to drop  position
         }
         //      else if (gamepad1.a) {
@@ -173,6 +181,8 @@ public class DriverControl extends RobotStructure {
         boolean touchStateGrab = !touchgrab.isPressed(); // Get touchgrab sensor state
         telemetry.addData("Grab Sensor", touchStateGrab ? "Released" : "Pressed");
 
-        telemetry.update(); // Update telemetry display
+        boolean switchState = sampleSwitch.getState();
+        telemetry.addData("Limit Switch State", switchState ? "Pressed" : "Released");
+        telemetry.update();
     }
 }
