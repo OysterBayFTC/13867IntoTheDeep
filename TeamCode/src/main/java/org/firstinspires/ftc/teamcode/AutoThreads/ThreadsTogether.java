@@ -86,11 +86,25 @@ public class ThreadsTogether extends LinearOpMode {
         pinpointDriver.resetPosAndIMU();
 
         // Initialize encoders for arm motors
+
+        // for lifts
         robot.liftLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.liftRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.liftLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         robot.liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        // for wheels
+        robot.motorFrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.motorFrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.motorBackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.motorBackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.motorFrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.motorFrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.motorBackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.motorBackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // for arms
         robot.ArmOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.ArmTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.liftLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -103,12 +117,21 @@ public class ThreadsTogether extends LinearOpMode {
 
         // Run LimitDown2 and ForwardMovement2 together
         runThreads("LimitDown2", "ForwardMovement2");
+        telemetry.addData("Threads", "Finished (check telemetry for which threads ran)");
+        telemetry.update();
+
+
+
 
         // Run ForwardMovement3 and LiftTask3 together
         runThreads("ForwardMovement3", "LiftTask3");
 
-        //Run LimitDown4 and ForwardMovement4 together
+        // Run ForwardMovement4 and LiftTask3 together
         runThreads("LimitDown4", "ForwardMovement4");
+
+
+        //Run LimitDown4 and ForwardMovement4 together
+       // runThreads("LimitDown4", "ForwardMovement4");
         telemetry.addData("Threads", "Finished (check telemetry for which threads ran)");
         telemetry.update();
         sleep(2000); // Keep telemetry visible for a moment
@@ -133,6 +156,7 @@ public class ThreadsTogether extends LinearOpMode {
             case "ForwardMovement3":
                 thread = new Thread(new ThreadTasks3.ForwardMovement3(robot, pinpointDriver, telemetry, this));
                 break;
+
 
             default:
                 telemetry.addData("Error", "Unknown thread name: " + threadName);
@@ -204,10 +228,16 @@ public class ThreadsTogether extends LinearOpMode {
                 thread2 = new Thread(new ThreadTasks2.ForwardMovement2(robot, pinpointDriver, telemetry, this));
                 break;
             case "ForwardMovement3":
-                thread1 = new Thread(new ThreadTasks3.ForwardMovement3(robot, pinpointDriver, telemetry, this));
+                thread2 = new Thread(new ThreadTasks3.ForwardMovement3(robot, pinpointDriver, telemetry, this));
                 break;
             case "LiftTask3":
-                thread1 = new Thread(new ThreadTasks3.LiftTask3(robot, telemetry, this));
+                thread2 = new Thread(new ThreadTasks3.LiftTask3(robot, telemetry, this));
+                break;
+            case "LimitDown4":
+                thread2 = new Thread(new ThreadTasks4.LimitDown4(robot, telemetry, this));
+                break;
+            case "ForwardMovement4":
+                thread2 = new Thread(new ThreadTasks4.ForwardMovement4(robot, pinpointDriver, telemetry, this));
                 break;
 
             default:

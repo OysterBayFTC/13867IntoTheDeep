@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-
+import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.teamcode.Base.RobotStructure;
 
 
@@ -182,7 +182,7 @@ public class DriverControl extends RobotStructure {
         telemetry.addData("Grab Sensor", touchStateGrab ? "Released" : "Pressed");
 
         boolean switchState = sampleSwitch.getState();
-        telemetry.addData("Limit Switch State", switchState ? "Pressed" : "Released");
+        telemetry.addData("Limit Switch State", switchState ? "Released" : "Pressed");
         telemetry.update();
     }
 }

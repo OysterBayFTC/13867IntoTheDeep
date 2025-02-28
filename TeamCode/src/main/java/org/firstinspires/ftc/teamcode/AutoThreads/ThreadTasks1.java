@@ -60,7 +60,6 @@ public class ThreadTasks1 {
             sleep(300);
 
             robot.bucketServo.setPosition(dropBucket);
-            robot.bucketServo.setPosition(dropBucket);
             sleep(1000);
             //... rest of the lift logic
         }
@@ -111,7 +110,7 @@ public class ThreadTasks1 {
                 }
                 // Move in Y direction
                 else if (y < InitalTargety) {
-                    robot.setDriverMotorPower(0.5, -0.5, -0.5, 0.5);
+                    robot.setDriverMotorPower(0.4, -0.4, -0.4, 0.4);
                 }
                 // Stop and set movementComplete1 to true
                 else {
@@ -134,6 +133,7 @@ public class ThreadTasks1 {
 
                 robot.ArmOne.setPower(0);
                 robot.ArmTwo.setPower(0);
+                robot.clawRotate.setPosition(clawRotateBlockRight); // When block is left of claw
                 robot.clawRotate.setPosition(clawRotateBlockLeft); // When block is left of claw
 
                 telemetry.addData("Status", "Arm and claw interaction complete");
