@@ -27,7 +27,7 @@ public class ThreadsTogether extends LinearOpMode {
     private static final double MiddleBlockY2 = -505;
     private static final double RightBlockx  = 405;//380
     private static final double RightBlocky  = -230;
-    private static final double LiftHeightUp  = 5600; // height for the lift
+    private static final double LiftHeightUp  = 5700; // height for the lift
     private static final double LiftHeightoDown = 100; // height for the lift
     private static final double Scorepositionx1  = 325; // score position X
     private static final double ScorePositiony1  = -550; // score position Y
@@ -114,7 +114,7 @@ public class ThreadsTogether extends LinearOpMode {
 
         // Run MovementTask1 and LiftTask1 together
         runThreads("MovementTask1", "LiftTask1");
-
+        sleep(150);
         // Run LimitDown2 and ForwardMovement2 together
         runThreads("LimitDown2", "ForwardMovement2");
         telemetry.addData("Threads", "Finished (check telemetry for which threads ran)");
@@ -129,9 +129,13 @@ public class ThreadsTogether extends LinearOpMode {
         // Run ForwardMovement4 and LiftTask3 together
         runThreads("LimitDown4", "ForwardMovement4");
 
+        // Run ForwardMovement5 and LiftTask5 together
+        runThreads("ForwardMovement5", "LiftTask5");
 
-        //Run LimitDown4 and ForwardMovement4 together
-       // runThreads("LimitDown4", "ForwardMovement4");
+        // Run ForwardMovement6 and LiftTask6 together
+        runThreads("LimitDown6", "ForwardMovement6");
+
+
         telemetry.addData("Threads", "Finished (check telemetry for which threads ran)");
         telemetry.update();
         sleep(2000); // Keep telemetry visible for a moment
@@ -207,6 +211,12 @@ public class ThreadsTogether extends LinearOpMode {
             case "ForwardMovement4":
                 thread1 = new Thread(new ThreadTasks4.ForwardMovement4(robot, pinpointDriver, telemetry, this));
                 break;
+            case "ForwardMovement5":
+                thread1 = new Thread(new ThreadTasks5.ForwardMovement5(robot, pinpointDriver, telemetry, this));
+                break;
+            case "LiftTask5":
+                thread1 = new Thread(new ThreadTasks5.LiftTask5(robot, telemetry, this));
+                break;
 
             default:
                 telemetry.addData("Error", "Unknown thread name: " + threadName1);
@@ -238,6 +248,12 @@ public class ThreadsTogether extends LinearOpMode {
                 break;
             case "ForwardMovement4":
                 thread2 = new Thread(new ThreadTasks4.ForwardMovement4(robot, pinpointDriver, telemetry, this));
+                break;
+            case "ForwardMovement5":
+                thread2 = new Thread(new ThreadTasks5.ForwardMovement5(robot, pinpointDriver, telemetry, this));
+                break;
+            case "LiftTask5":
+                thread2 = new Thread(new ThreadTasks5.LiftTask5(robot, telemetry, this));
                 break;
 
             default:

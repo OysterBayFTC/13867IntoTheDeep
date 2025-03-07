@@ -3,12 +3,15 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.teamcode.Base.RobotStructure;
 
 
 @TeleOp(name = "DriverControl")
 public class DriverControl extends RobotStructure {
+    private static final boolean USE_WEBCAM = true;
     private final boolean motorState = false;
     double clawServoPosition = 0.15; // Initial position
     double clawRotateBlockLeft = 0;
@@ -33,6 +36,7 @@ public class DriverControl extends RobotStructure {
         telemetry.addData("Touchdrop Sensor State", touchdropState ? "Pressed" : "Released");
         telemetry.addData("Touchgrab Sensor State", touchdropState ? "Pressed" : "Released");
 
+
         telemetry.update();
         ArmOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         ArmTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -44,7 +48,7 @@ public class DriverControl extends RobotStructure {
         liftRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         // Set it to neutral (stop)
         clawServo.setPower(0.0);
-
+       // ServoPush.setPosition(.0); // Up
     }
 
     @Override

@@ -20,16 +20,21 @@ public class AutoRobotStruct {
     // DcMotor LiftLeft ExpansionHub  Slot2
     // DcMotor LiftRight ExpansionHub Slot1 
     public TouchSensor touchbucket, touchgrab, touchdrop;
-    // TouchSensor touchdrop Digital ControlHub 2-3
-    // TouchSensor touchdrop Analog ControlHub 2-3
+    // TouchSensor touchgrab Digital ControlHub 2-3
+    // TouchSensor touchdrop Analog ControlHub 0-1
     public Servo bucketServo;
-    // Servo bucketServo ControlHub Slot2
+    // Servo bucketServo ControlHub Slot
     public CRServo clawServo;
-    // Servo clawServo ExpansionHub Slot2
+    // Servo clawServo ExpansionHub Slot3
+
+    public Servo ServoPush;
+    // Servo servoPush
+    //
 
     public Servo clawRotate;
     // Servo clawServo ExpansionHub Slot2
     public DigitalChannel sampleSwitch;
+    // Digtial Channel sampleSwitch ExpansionHub Slot 7
 
 
 
@@ -40,12 +45,14 @@ public class AutoRobotStruct {
     motorBackLeft = hardwareMap.get(DcMotor.class, "motorBackLeft"); //
     motorBackRight = hardwareMap.get(DcMotor.class, "motorBackRight"); //
     liftLeft = hardwareMap.get(DcMotor.class, "liftLeft"); //
+
     liftRight = hardwareMap.get(DcMotor.class, "liftRight"); //
     ArmOne = hardwareMap.get(DcMotor.class, "ArmOne"); // 
     ArmTwo = hardwareMap.get(DcMotor.class, "ArmTwo"); //
     bucketServo = hardwareMap.get(Servo.class, "bucketServo"); //
     clawServo = hardwareMap.get(CRServo.class, "clawServo"); //
-    touchdrop = hardwareMap.get(TouchSensor.class, "touchdrop"); //
+       ServoPush = hardwareMap.get(Servo.class, "ServoPush" ); //
+               touchdrop = hardwareMap.get(TouchSensor.class, "touchdrop"); //
     touchgrab = hardwareMap.get(TouchSensor.class, "touchgrab"); //
        clawRotate = hardwareMap.get(Servo.class, "clawRotate");
        sampleSwitch = hardwareMap.get(DigitalChannel.class, "sampleSwitch");

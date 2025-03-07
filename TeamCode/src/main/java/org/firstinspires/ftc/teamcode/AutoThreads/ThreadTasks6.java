@@ -10,12 +10,13 @@ import org.firstinspires.ftc.teamcode.GoBildaPinpointDriver;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
-public class ThreadTasks4 {
+public class ThreadTasks6 {
 
     // Constants for LimitDown2 and ForwardMovement2 (if needed and not already in ThreadsTogether)
     private static final double LiftHeightoDown = 500; // height for the lift
-    private static final double RightBlockx = 500;//390
-    private static final double RightBlocky = 250;
+    private static final double LeftBlockX = 410;//390
+    private static final double MiddleBlockY = 445;  // Change back to 455
+    private static final double MiddleBlockY2 = 495; //505
     private static final double neutralBucket = 0.35; // Catch position
 
     private static final double clawOpen = 0.65;
@@ -28,14 +29,13 @@ public class ThreadTasks4 {
     double clawRotateBlockVert = .35;
     static double clawRotateBlockDrop = .99;
 
-    //static double clawRotateBlockDrop = .99;
 
-    public static class LimitDown4 implements Runnable {
+    public static class LimitDown6 implements Runnable {
         private AutoRobotStruct robot;
         private Telemetry telemetry;
         private LinearOpMode opMode; // Add LinearOpMode instance
 
-        public LimitDown4(AutoRobotStruct robot, Telemetry telemetry, LinearOpMode opMode) { // Add opMode to constructor
+        public LimitDown6(AutoRobotStruct robot, Telemetry telemetry, LinearOpMode opMode) { // Add opMode to constructor
             this.robot = robot;
             this.telemetry = telemetry;
             this.opMode = opMode; // Store the LinearOpMode
@@ -58,7 +58,6 @@ public class ThreadTasks4 {
             }
             robot.liftLeft.setPower(0.0);
             robot.liftRight.setPower(0.0);
-            robot.bucketServo.setPosition(neutralBucket);
 
 
         }
@@ -76,14 +75,16 @@ public class ThreadTasks4 {
         }
     }
 
-    public static class ForwardMovement4 implements Runnable {
+    public static class ForwardMovement6 implements Runnable {
         private AutoRobotStruct robot;
         private GoBildaPinpointDriver pinpointDriver;
         private Telemetry telemetry;
         private LinearOpMode opMode; // Add LinearOpMode instance
-        private volatile boolean movementComplete4a = false;
+        private volatile boolean movementComplete6a = false;
+        private volatile boolean movementComplete6b = false;
 
-        public ForwardMovement4(AutoRobotStruct robot, GoBildaPinpointDriver pinpointDriver, Telemetry telemetry, LinearOpMode opMode) { // Add opMode to constructor
+
+        public ForwardMovement6(AutoRobotStruct robot, GoBildaPinpointDriver pinpointDriver, Telemetry telemetry, LinearOpMode opMode) { // Add opMode to constructor
             this.robot = robot;
             this.pinpointDriver = pinpointDriver;
             this.telemetry = telemetry;
@@ -95,53 +96,78 @@ public class ThreadTasks4 {
             if (telemetry == null) {
                 return; // Exit if telemetry is null
             }
-
             double desiredHeading = 0; // Desired heading for straight path
             double kP = 0.05; // Proportional gain for heading correction
 
-            while (!movementComplete4a && isOpModeActive()) {
+            while (!movementComplete6a && isOpModeActive()) {
                 pinpointDriver.update();
                 Pose2D pose = pinpointDriver.getPosition();
                 double heading = pinpointDriver.getHeading(AngleUnit.DEGREES);
+                double x = pose.getX(DistanceUnit.MM);
+                double y =  pose.getY(DistanceUnit.MM);
+
+                //calculate heading error
+                double headingError = desiredHeading - heading;
+
+                //adjust motor powers based on heading error
+                double leftPower = -0.4 + kP * headingError;
+                double rightPower = -0.4 - kP * headingError;
+
+                telemetry.addData("Forwards Movement X (mm)", x);
+                telemetry.addData("Forwards Movement Y (mm)", y);
+                telemetry.addData("Thread Status", "Moving forward");
+                telemetry.update();
+                if (x < LeftBlockX) {
+                    telemetry.addData("Translating", "Right");
+                    telemetry.update();
+                    robot.clawRotate.setPosition(clawRotateBlockLeft); // When block is left of claw
+                    robot.setDriverMotorPower(-0.5, 0.5, 0.5, -0.5);
+                } else if (y > MiddleBlockY) {
+                    robot.setDriverMotorPower(0.4, 0.4, 0.4, 0.4);
+                } else {
+                    robot.setDriverMotorPower(0, 0, 0, 0);
+                    movementComplete6a = true;
+                    sleep(150);
+
+                }
+            }
+
+            while (!movementComplete6b && isOpModeActive()) {
+                pinpointDriver.update();
+                Pose2D pose = pinpointDriver.getPosition();
                 double x = pose.getX(DistanceUnit.MM);
                 double y = pose.getY(DistanceUnit.MM);
 
                 telemetry.addData("Forwards Movement X (mm)", x);
                 telemetry.addData("Forwards Movement Y (mm)", y);
-                telemetry.addData("Forwards Movement Heading (deg)", heading);
                 telemetry.addData("Thread Status", "Moving forward");
                 telemetry.update();
-
-                // Calculate heading error
-                double headingError = desiredHeading - heading;
-
-                // Adjust motor powers based on heading error
-                double leftPower = 0.4 + kP * headingError;
-                double rightPower = 0.4 - kP * headingError;
-
                 robot.clawServo.setPower(1); // Assuming this opens the claw
-                if (x < RightBlockx) {
-                    robot.setDriverMotorPower(leftPower, rightPower, leftPower, rightPower);
-                    robot.clawRotate.setPosition(clawRotateBlockRight);
-                }
-                // else if (headingError > 2) {
-                //    robot.setDriverMotorPower(0.25,0.25,0.25,0.25,);
+                if (y < MiddleBlockY2 ) {
+                    // || !robot.sampleSwitch.getState()
+                    telemetry.addData("Translating", "Left");
+                    telemetry.update();
+                    // Move in the Y direction only if the sampleSwitch is not pressed
+                    robot.setDriverMotorPower(0.25, -0.25, -0.25, 0.25);
 
-                else if (y > RightBlocky) {
-                    robot.setDriverMotorPower(-0.25, 0.25, 0.25, -0.25);
+
                 } else {
+                    // Stop movement if the sampleSwitch is pressed or Y target is reached
                     robot.setDriverMotorPower(0, 0, 0, 0);
-                    movementComplete4a = true;
+                    robot.clawServo.setPower(0);
+                    telemetry.addData("Status", "movement 2 complete");
+                    telemetry.update();
+                    movementComplete6b = true;
                     sleep(150);
                 }
-
-
             }
             robot.clawRotate.setPosition(clawRotateBlockDrop);
             while (isOpModeActive() && !robot.touchdrop.isPressed()) {
                 robot.ArmOne.setPower(.4);
                 robot.ArmTwo.setPower(.4);
             }
+
+
             robot.ArmOne.setPower(0);
             robot.ArmTwo.setPower(0);
             robot.clawServo.setPower(-1.0);
@@ -153,6 +179,8 @@ public class ThreadTasks4 {
             robot.ArmOne.setPower(0);
             robot.ArmTwo.setPower(0);
             robot.clawServo.setPower(0);
+
+
         }
 
         private void sleep(int milliseconds) {
@@ -164,9 +192,10 @@ public class ThreadTasks4 {
                 Thread.currentThread().interrupt();
             }
         }
-
         private boolean isOpModeActive() {
             return opMode.opModeIsActive();
         }
     }
+
+
 }

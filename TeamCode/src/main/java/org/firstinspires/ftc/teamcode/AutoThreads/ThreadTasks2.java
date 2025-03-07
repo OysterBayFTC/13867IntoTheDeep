@@ -12,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 public class ThreadTasks2 {
 
     // Constants for LimitDown2 and ForwardMovement2 (if needed and not already in ThreadsTogether)
-    private static final double LiftHeightoDown = 100; // height for the lift
-    private static final double MIddleBlockx = 410;//390
+    private static final double LiftHeightoDown = 500; // height for the lift
+    private static final double MIddleBlockx = 420;//390
     private static final double MiddleBlockY = 445;  // Change back to 455
     private static final double MiddleBlockY2 = 495; //505
     private static final double neutralBucket = 0.35; // Catch position
@@ -57,6 +57,7 @@ public class ThreadTasks2 {
             }
             robot.liftLeft.setPower(0.0);
             robot.liftRight.setPower(0.0);
+            robot.clawRotate.setPosition(clawRotateBlockLeft); // When block is left of claw
 
 
         }
@@ -114,6 +115,7 @@ public class ThreadTasks2 {
                 } else if (x < MIddleBlockx) {
                     robot.setDriverMotorPower(0.4, 0.4, 0.4, 0.4);
                 } else {
+                    robot.clawRotate.setPosition(clawRotateBlockLeft); // When block is left of claw
                     robot.setDriverMotorPower(0, 0, 0, 0);
                     movementComplete2a = true;
                     sleep(150);
@@ -137,13 +139,14 @@ public class ThreadTasks2 {
                     telemetry.addData("Translating", "Left");
                     telemetry.update();
                     // Move in the Y direction only if the sampleSwitch is not pressed
-                   robot.setDriverMotorPower(0.25, -0.25, -0.25, 0.25);
+                   robot.setDriverMotorPower(0.35, -0.35, -0.35, 0.35);
 
 
                 } else {
                     // Stop movement if the sampleSwitch is pressed or Y target is reached
                     robot.setDriverMotorPower(0, 0, 0, 0);
                     robot.clawServo.setPower(0);
+                    robot.clawRotate.setPosition(clawRotateBlockDrop);
                     telemetry.addData("Status", "movement 2 complete");
                     telemetry.update();
                     movementComplete2b = true;
@@ -152,8 +155,8 @@ public class ThreadTasks2 {
             }
             robot.clawRotate.setPosition(clawRotateBlockDrop);
             while (isOpModeActive() && !robot.touchdrop.isPressed()) {
-                robot.ArmOne.setPower(.4);
-                robot.ArmTwo.setPower(.4);
+                robot.ArmOne.setPower(.65);
+                robot.ArmTwo.setPower(.65);
             }
 
 

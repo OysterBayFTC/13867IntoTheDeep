@@ -12,9 +12,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 public class ThreadTasks1 {
 
     // Constants for LiftTask1 and MovementTask1 (if needed and not already in ThreadsTogether)
-    private static final double LiftHeightUp  = 5600; // height for the lift
-    private static final double InitalTargetx = 120;
-    private static final double InitalTargety = 540.0;
+    private static final double LiftHeightUp  = 5700; // height for the lift
+    private static final double InitalTargetx = 160;
+    private static final double InitalTargety = 545.0;
     private static final double neutralBucket = 0.35; // Catch position
     private static final double dropBucket = 0.00;
     static double clawRotateBlockRight =.65;
@@ -48,8 +48,8 @@ public class ThreadTasks1 {
             robot.ArmTwo.setPower(0);
 
             robot.bucketServo.setPosition(neutralBucket);
-            robot.liftLeft.setPower(-0.85);
-            robot.liftRight.setPower(-0.85);
+            robot.liftLeft.setPower(-1);
+            robot.liftRight.setPower(-1);
 
             while (isOpModeActive() && (Math.abs(robot.liftLeft.getCurrentPosition()) < LiftHeightUp)) {
                 // Telemetry and loop condition as needed
@@ -98,11 +98,17 @@ public class ThreadTasks1 {
                 return; // Exit if telemetry is null
             }
 
+
             while (!movementComplete1 && isOpModeActive()) {
                 pinpointDriver.update();
                 Pose2D pose = pinpointDriver.getPosition();
                 double x = pose.getX(DistanceUnit.MM);
                 double y = pose.getY(DistanceUnit.MM);
+
+                // calculating the heading error
+
+                //adjust motor powers based on heading error
+
 
                 // Move in X direction
                 if (x < InitalTargetx) {
@@ -114,6 +120,11 @@ public class ThreadTasks1 {
                 }
                 // Stop and set movementComplete1 to true
                 else {
+                    sleep(100);
+                    robot.setDriverMotorPower(0, 0, 0, 0);
+                    sleep(100);
+                    robot.setDriverMotorPower(0.4, -0.4, -0.4, 0.4);
+                    sleep(250);
                     robot.setDriverMotorPower(0, 0, 0, 0);
                     movementComplete1 = true;
                 }
